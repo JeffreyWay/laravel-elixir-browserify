@@ -1,13 +1,12 @@
-import Elixir from 'laravel-elixir';
-import gulp from 'gulp';
-
-let config = Elixir.config;
-let gutil;
-let buffer;
-let source;
-let browserify;
-let watchify;
-let bundle;
+var Elixir = require('laravel-elixir');
+var gulp = require('gulp');
+var config = Elixir.config;
+var browserify = require('browserify');
+var watchify = require('watchify');
+var gutil = require('gulp-util');
+var buffer = require('vinyl-buffer');
+var source = require('vinyl-source-stream');
+var bundle;
 
 /*
  |----------------------------------------------------------------
@@ -21,19 +20,16 @@ let bundle;
  */
 
 Elixir.extend('browserify', function(src, output, baseDir, options) {
-    let paths = prepGulpPaths(src, baseDir, output);
+    var paths = getPaths(src, baseDir, output);
 
-    loadPlugins();
     loadConfig();
 
     new Elixir.Task('browserify', function($, config) {
-        let stream = config.js.browserify.watchify.enabled
+        var stream = config.js.browserify.watchify.enabled
             ? watchifyStream
             : browserifyStream;
 
         bundle = function(stream, paths) {
-            this.log(paths.src, paths.output);
-
             return (
                 stream
                 .bundle()
@@ -61,7 +57,7 @@ Elixir.extend('browserify', function(src, output, baseDir, options) {
             }),
             paths
         );
-    })
+    }, paths)
     .watch(); // Register a watcher, but Watchify will do the workload.
 });
 
@@ -74,7 +70,7 @@ Elixir.extend('browserify', function(src, output, baseDir, options) {
  * @param  {string|null}  output
  * @return {GulpPaths}
  */
- function prepGulpPaths(src, baseDir, output) {
+ function getPaths(src, baseDir, output) {
     return new Elixir.GulpPaths()
         .src(src, baseDir || config.get('assets.js.folder'))
         .output(output || config.get('public.js.outputFolder'), 'bundle.js');
@@ -87,7 +83,7 @@ Elixir.extend('browserify', function(src, output, baseDir, options) {
  * @param {object} data
  */
 function browserifyStream(data) {
-    let stream = browserify(data.paths.src.path, data.options);
+    var stream = browserify(data.paths.src.path, data.options);
 
     config.js.browserify.transformers.forEach(transformer => {
         stream.transform(
@@ -115,27 +111,17 @@ function browserifyStream(data) {
  * @param {object} data
  */
 function watchifyStream(data) {
-    let browserify = watchify(
+    var browserify = watchify(
         browserifyStream(data),
         config.js.browserify.watchify.options
     );
 
     browserify.on('log', gutil.log);
-    browserify.on('update', () => bundle(browserify, data.paths));
+    browserify.on('update', function () {
+        bundle(browserify, data.paths);
+    });
 
     return browserify;
-}
-
-
-/**
- * Load the required Gulp plugins on demand.
- */
-function loadPlugins() {
-    browserify = require('browserify');
-    watchify = require('watchify');
-    gutil = require('gulp-util');
-    buffer = require('vinyl-buffer');
-    source = require('vinyl-source-stream');
 }
 
 
