@@ -1,6 +1,6 @@
 {
   "name": "laravel-elixir-browserify-official",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Laravel Elixir Browserify Integration",
   "main": "browserify.js",
   "dependencies": {

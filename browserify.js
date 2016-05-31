@@ -19,10 +19,10 @@ var bundle;
  |
  */
 
+loadConfig();
+
 Elixir.extend('browserify', function(src, output, baseDir, options) {
     var paths = getPaths(src, baseDir, output);
-
-    loadConfig();
 
     new Elixir.Task('browserify', function($, config) {
         var stream = config.js.browserify.watchify.enabled
