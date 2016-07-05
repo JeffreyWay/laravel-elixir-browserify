@@ -85,19 +85,19 @@ Elixir.extend('browserify', function(src, output, baseDir, options) {
 function browserifyStream(data) {
     var stream = browserify(data.paths.src.path, data.options);
 
-    config.js.browserify.transformers.forEach(transformer => {
+    config.js.browserify.transformers.forEach(function(transformer) {
         stream.transform(
             require(transformer.name), transformer.options || {}
         );
     });
 
-    config.js.browserify.plugins.forEach(plugin => {
+    config.js.browserify.plugins.forEach(function(plugin) {
         stream.plugin(
             require(plugin.name), plugin.options || {}
         );
     });
 
-    config.js.browserify.externals.forEach(external => {
+    config.js.browserify.externals.forEach(function(external) {
         stream.external(external);
     });
 
