@@ -87,13 +87,15 @@ function browserifyStream(data) {
 
     config.js.browserify.transformers.forEach(function(transformer) {
         stream.transform(
-            require(transformer.name).default || require(transformer.name), transformer.options || {}
+            require(transformer.name).default || require(transformer.name),
+            transformer.options || {}
         );
     });
 
     config.js.browserify.plugins.forEach(function(plugin) {
         stream.plugin(
-            require(plugin.name).default || require(plugin.name), plugin.options || {}
+            require(plugin.name).default || require(plugin.name),
+            plugin.options || {}
         );
     });
 
