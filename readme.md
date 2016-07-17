@@ -2,6 +2,8 @@
 
 ## Step 1: Install
 
+First ensure, that you're Laravel Elixir version is up to date. It should be at least version 6 or newer.
+
 ```
 npm install laravel-elixir-browserify-official --save-dev
 ```
@@ -13,9 +15,9 @@ npm install laravel-elixir-browserify-official --save-dev
 
 var elixir = require('laravel-elixir');
 
-require('laravel-elixir-browserify-official');
-
 elixir(function(mix) {
-    mix.browserify('main.js'); // src, output, baseDir, browserify-options
+    mix.browserify('main.js'); // mix.browserify(srcPath, outputPath, srcBaseDir, browserifyOptions)
 });
 ```
+
+That's it! [Refer to the Laravel Elixir documentation for more details](https://laravel.com/docs/elixir#browserify).
